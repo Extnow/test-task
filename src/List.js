@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import { connect } from 'react-redux';
 import Modal from './Modal';
 
 const ListWrapper = styled.div`
@@ -10,43 +11,23 @@ const ListWrapper = styled.div`
   justify-content: center;
 `;
 
-export default class List extends React.Component {
-  state = {
-    items: [
-      {
-        id: 1,
-        text: 'random text',
-      },
-      {
-        id: 2,
-        text: 'random text',
-      },
-      {
-        id: 3,
-        text: 'random text',
-      },
-      {
-        id: 4,
-        text: 'random text',
-      },
-      {
-        id: 5,
-        text: 'random text',
-      },
-      {
-        id: 6,
-        text: 'random text',
-      },
-    ],
-    isModalOpen: true,
-  };
+class List extends React.Component {
+  // componentDidMount() {
+  //   document.addEventListener('keydown', this.escFunctionEvent, false);
+  // }
 
-  toggleModal = () => {
-    this.setState(state => ({ isModalOpen: !state.isModalOpen }));
-  };
+  // toggleModal = () => {
+  //   this.setState(state => ({ isModalOpen: !state.isModalOpen }));
+  // };
+
+  // escFunctionEvent = (event) => {
+  //   if (event.keyCode === 27) {
+  //     this.setState({ isModalOpen: false });
+  //   }
+  // };
 
   render() {
-    const { items, isModalOpen } = this.state;
+    const { items, isModalOpen } = this.props;
 
     return (
       <React.Fragment>
@@ -57,8 +38,9 @@ export default class List extends React.Component {
             </button>
           ))}
         </ListWrapper>
+
         {isModalOpen && (
-          <Modal onClose={this.toggleModal}>
+          <Modal>
             <p />
           </Modal>
         )}
@@ -66,3 +48,13 @@ export default class List extends React.Component {
     );
   }
 }
+
+const mapStateToProps = (store) => {
+  console.log(store);
+
+  return {
+    items: store.items,
+  };
+};
+
+export default connect(mapStateToProps)(List);
