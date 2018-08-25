@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import Modal from './Modal';
 
 const ListWrapper = styled.div`
   width: 300px;
@@ -37,17 +38,31 @@ export default class List extends React.Component {
         text: 'random text',
       },
     ],
+    isModalOpen: true,
+  };
+
+  toggleModal = () => {
+    this.setState(state => ({ isModalOpen: !state.isModalOpen }));
   };
 
   render() {
-    const { items } = this.state;
+    const { items, isModalOpen } = this.state;
 
     return (
-      <ListWrapper>
-        {items.map(item => (
-          <button key={item.id} type="button">{item.text}</button>
-        ))}
-      </ListWrapper>
+      <React.Fragment>
+        <ListWrapper>
+          {items.map(item => (
+            <button onClick={this.toggleModal} key={item.id} type="button">
+              {item.text}
+            </button>
+          ))}
+        </ListWrapper>
+        {isModalOpen && (
+          <Modal onClose={this.toggleModal}>
+            <p />
+          </Modal>
+        )}
+      </React.Fragment>
     );
   }
 }
