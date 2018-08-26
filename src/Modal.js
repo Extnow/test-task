@@ -32,38 +32,16 @@ const Text = styled.textarea`
 `;
 
 export default class Modal extends React.Component {
-  // // new
-  // onBtnClick = (e) => {
-  //   e.preventDefault();
-
-  //   const { onUpdateText, items, isModalOpen } = this.props;
-  //   const { text } = items;
-
-  //   onUpdateText({
-  //     text,
-  //     isModalOpen,
-  //   });
-  // };
-  // // --------------
-
-  // state = {
-  //   value: '',
-  // }
-
-  // UpdateText = (e) => {
-  //   this.setState({ value: e.target.value });
-  // };
-
   render() {
     const {
-      onClose, items, onUpdateText,
+      onClose, onSave, updateText, currentText, currentId,
     } = this.props;
 
     return ReactDOM.createPortal(
       <ModalWindow>
-        <BtnSave onClick={this.onBtnClick}>Сохранить</BtnSave>
+        <BtnSave onClick={() => onSave(currentId)}>Сохранить</BtnSave>
         <BtnClose onClick={onClose}>Выйти</BtnClose>
-        <Text rows="10" cols="45" onChange={onUpdateText} value={items[1].text} />
+        <Text rows="10" cols="45" onChange={updateText} value={currentText} />
       </ModalWindow>,
       document.getElementById('portal'),
     );

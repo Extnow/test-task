@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import Modal from './Modal';
+import Btn from './Btn';
 
 const ListWrapper = styled.div`
   width: 300px;
@@ -39,14 +40,20 @@ export default class List extends React.Component {
       },
     ],
     isModalOpen: false,
+    currentText: null,
+    currentId: null,
   };
 
   componentDidMount() {
     document.addEventListener('keydown', this.escFunctionEvent, false);
   }
 
-  toggleModal = () => {
-    this.setState(state => ({ isModalOpen: !state.isModalOpen }));
+  toggleModal = (val) => {
+    this.setState(state => ({
+      isModalOpen: !state.isModalOpen,
+      currentText: val.text,
+      currentId: val.id,
+    }));
   };
 
   escFunctionEvent = (event) => {
@@ -55,34 +62,43 @@ export default class List extends React.Component {
     }
   };
 
-  // new
-  handleUpdateText = (data) => {
-    const { items } = this.state;
-    const newText = [data, ...items];
-
-    this.setState(state => ({ items: newText, isModalOpen: !state.isModalOpen }));
+  updateText = (e) => {
+    this.setState({ currentText: e.target.value });
   };
-  // ----------------------------
+
+  saveText = (id) => {
+    const { items, currentText } = this.state;
+
+    for (const item of items) {
+      if (item.id === id) {
+        item.text = currentText;
+      }
+    }
+
+    this.setState(state => ({ isModalOpen: !state.isModalOpen }));
+  };
 
   render() {
-    const { items, isModalOpen } = this.state;
+    const {
+      items, isModalOpen, currentText, currentId,
+    } = this.state;
 
     return (
       <React.Fragment>
         <ListWrapper>
           {items.map(item => (
-            <button onClick={this.toggleModal} key={item.id} type="button">
-              {item.text}
-            </button>
+            <Btn key={item.id} text={item.text} toggleModal={() => this.toggleModal(item)} />
           ))}
         </ListWrapper>
 
         {isModalOpen && (
           <Modal
-            onUpdateText={this.handleUpdateText}
+            updateText={this.updateText}
             onClose={this.toggleModal}
             isModalOpen={isModalOpen}
-            items={items}
+            currentText={currentText}
+            currentId={currentId}
+            onSave={this.saveText}
           />
         )}
       </React.Fragment>
