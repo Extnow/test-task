@@ -15,6 +15,12 @@ const ModalWindow = styled.div`
   z-index: 100;
 `;
 
+const BtnSave = styled.button`
+  position: absolute;
+  bottom: 160px;
+  cursor: pointer;
+`;
+
 const BtnClose = styled.button`
   position: absolute;
   bottom: 128px;
@@ -26,13 +32,16 @@ const Text = styled.textarea`
 `;
 
 export default class Modal extends React.Component {
-  state = {};
-
   render() {
+    const {
+      onClose, onSave, updateText, currentText, currentId,
+    } = this.props;
+
     return ReactDOM.createPortal(
       <ModalWindow>
-        <BtnClose>Сохранить</BtnClose>
-        <Text rows="10" cols="45" defaultValue="ss" />
+        <BtnSave onClick={() => onSave(currentId)}>Сохранить</BtnSave>
+        <BtnClose onClick={onClose}>Выйти</BtnClose>
+        <Text rows="10" cols="45" onChange={updateText} value={currentText} />
       </ModalWindow>,
       document.getElementById('portal'),
     );

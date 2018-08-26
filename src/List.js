@@ -1,7 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
-import { connect } from 'react-redux';
 import Modal from './Modal';
+import Btn from './Btn';
+import itemsData from './itemsData.json';
 
 const ListWrapper = styled.div`
   width: 300px;
@@ -11,50 +12,70 @@ const ListWrapper = styled.div`
   justify-content: center;
 `;
 
-class List extends React.Component {
-  // componentDidMount() {
-  //   document.addEventListener('keydown', this.escFunctionEvent, false);
-  // }
+export default class List extends React.Component {
+  state = {
+    items: itemsData,
+    isModalOpen: false,
+    currentText: null,
+    currentId: null,
+  };
 
-  // toggleModal = () => {
-  //   this.setState(state => ({ isModalOpen: !state.isModalOpen }));
-  // };
+  componentDidMount() {
+    document.addEventListener('keydown', this.escFunctionEvent, false);
+  }
 
-  // escFunctionEvent = (event) => {
-  //   if (event.keyCode === 27) {
-  //     this.setState({ isModalOpen: false });
-  //   }
-  // };
+  toggleModal = (item) => {
+    this.setState(state => ({
+      isModalOpen: !state.isModalOpen,
+      currentText: item.text,
+      currentId: item.id,
+    }));
+  };
+
+  escFunctionEvent = (event) => {
+    if (event.keyCode === 27) {
+      this.setState(state => ({ isModalOpen: !state.isModalOpen }));
+    }
+  };
+
+  updateText = (e) => {
+    this.setState({ currentText: e.target.value });
+  };
+
+  saveText = (id) => {
+    const { items, currentText } = this.state;
+
+    function isEqualId(array) {
+      return array.id === id;
+    }
+    items.find(isEqualId).text = currentText;
+
+    this.setState(state => ({ isModalOpen: !state.isModalOpen }));
+  };
 
   render() {
-    const { items, isModalOpen } = this.props;
+    const {
+      items, isModalOpen, currentText, currentId,
+    } = this.state;
 
     return (
       <React.Fragment>
         <ListWrapper>
           {items.map(item => (
-            <button onClick={this.toggleModal} key={item.id} type="button">
-              {item.text}
-            </button>
+            <Btn key={item.id} text={item.text} toggleModal={() => this.toggleModal(item)} />
           ))}
         </ListWrapper>
 
         {isModalOpen && (
-          <Modal>
-            <p />
-          </Modal>
+          <Modal
+            updateText={this.updateText}
+            onClose={this.toggleModal}
+            onSave={this.saveText}
+            currentText={currentText}
+            currentId={currentId}
+          />
         )}
       </React.Fragment>
     );
   }
 }
-
-const mapStateToProps = (store) => {
-  console.log(store);
-
-  return {
-    items: store.items,
-  };
-};
-
-export default connect(mapStateToProps)(List);
