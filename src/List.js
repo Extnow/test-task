@@ -48,11 +48,11 @@ export default class List extends React.Component {
     document.addEventListener('keydown', this.escFunctionEvent, false);
   }
 
-  toggleModal = (val) => {
+  toggleModal = (item) => {
     this.setState(state => ({
       isModalOpen: !state.isModalOpen,
-      currentText: val.text,
-      currentId: val.id,
+      currentText: item.text,
+      currentId: item.id,
     }));
   };
 
@@ -69,11 +69,10 @@ export default class List extends React.Component {
   saveText = (id) => {
     const { items, currentText } = this.state;
 
-    for (const item of items) {
-      if (item.id === id) {
-        item.text = currentText;
-      }
+    function isEqualId(array) {
+      return array.id === id;
     }
+    items.find(isEqualId).text = currentText;
 
     this.setState(state => ({ isModalOpen: !state.isModalOpen }));
   };
@@ -95,10 +94,9 @@ export default class List extends React.Component {
           <Modal
             updateText={this.updateText}
             onClose={this.toggleModal}
-            isModalOpen={isModalOpen}
+            onSave={this.saveText}
             currentText={currentText}
             currentId={currentId}
-            onSave={this.saveText}
           />
         )}
       </React.Fragment>
