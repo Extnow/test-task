@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import Modal from './Modal';
 import Btn from './Btn';
+import itemsData from './itemsData.json';
 
 const ListWrapper = styled.div`
   width: 300px;
@@ -13,32 +14,7 @@ const ListWrapper = styled.div`
 
 export default class List extends React.Component {
   state = {
-    items: [
-      {
-        id: 1,
-        text: 'random text 1',
-      },
-      {
-        id: 2,
-        text: 'random text 2',
-      },
-      {
-        id: 3,
-        text: 'random text 3',
-      },
-      {
-        id: 4,
-        text: 'random text 4',
-      },
-      {
-        id: 5,
-        text: 'random text 5',
-      },
-      {
-        id: 6,
-        text: 'random text 6',
-      },
-    ],
+    items: itemsData,
     isModalOpen: false,
     currentText: null,
     currentId: null,
