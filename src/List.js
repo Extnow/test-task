@@ -14,16 +14,20 @@ const ListWrapper = styled.div`
 export default class List extends React.Component {
   state = {
     items: null,
+    isDataLoading: false,
     isModalOpen: false,
     currentText: null,
     currentId: null,
   };
 
   componentDidMount() {
+    this.setState({ isDataLoading: true });
     fetch('http://localhost:3000/data/itemsData.json')
       .then(response => response.json())
       .then((data) => {
-        this.setState({ items: data });
+        setTimeout(() => {
+          this.setState({ isDataLoading: false, items: data });
+        }, 2000);
       });
     document.addEventListener('keydown', this.escFunctionEvent, false);
   }
@@ -37,7 +41,9 @@ export default class List extends React.Component {
   };
 
   escFunctionEvent = (event) => {
-    if (event.keyCode === 27) {
+    const { isModalOpen } = this.state;
+
+    if ((event.keyCode === 27) && (isModalOpen === true)) {
       this.setState(state => ({ isModalOpen: !state.isModalOpen }));
     }
   };
@@ -59,7 +65,7 @@ export default class List extends React.Component {
 
   render() {
     const {
-      items, isModalOpen, currentText, currentId,
+      items, isDataLoading, isModalOpen, currentText, currentId,
     } = this.state;
 
     return (
@@ -71,6 +77,7 @@ export default class List extends React.Component {
             ))}
           </ListWrapper>
         )}
+        {isDataLoading && <p>Загрузка...</p>}
         {isModalOpen && (
           <Modal
             updateText={this.updateText}
