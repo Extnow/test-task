@@ -11,3 +11,17 @@ export function itemsFetchDataSuccess(items) {
     items,
   };
 }
+
+export function itemsFetchData(url) {
+  return (dispatch) => {
+    dispatch(itemsIsLoading(true));
+    fetch(url)
+      .then(response => response.json())
+      .then((items) => {
+        setTimeout(() => {
+          dispatch(itemsFetchDataSuccess(items));
+          dispatch(itemsIsLoading(false));
+        }, 2000);
+      });
+  };
+}

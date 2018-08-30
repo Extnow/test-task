@@ -1,5 +1,7 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import styled from 'styled-components';
+import { itemsFetchData } from './actions';
 import Modal from './Modal';
 import Btn from './Btn';
 
@@ -11,24 +13,17 @@ const ListWrapper = styled.div`
   justify-content: center;
 `;
 
-export default class List extends React.Component {
+class List extends React.Component {
   state = {
-    items: null,
-    isDataLoading: false,
     isModalOpen: false,
     currentText: null,
     currentId: null,
   };
 
   componentDidMount() {
-    this.setState({ isDataLoading: true });
-    fetch('http://localhost:3000/data/itemsData.json')
-      .then(response => response.json())
-      .then((data) => {
-        setTimeout(() => {
-          this.setState({ isDataLoading: false, items: data });
-        }, 2000);
-      });
+    const { fetchData } = this.props;
+
+    fetchData('http://localhost:3000/data/itemsData.json');
     document.addEventListener('keydown', this.escFunctionEvent, false);
   }
 
@@ -43,7 +38,7 @@ export default class List extends React.Component {
   escFunctionEvent = (event) => {
     const { isModalOpen } = this.state;
 
-    if ((event.keyCode === 27) && (isModalOpen === true)) {
+    if (event.keyCode === 27 && isModalOpen === true) {
       this.setState(state => ({ isModalOpen: !state.isModalOpen }));
     }
   };
@@ -53,7 +48,8 @@ export default class List extends React.Component {
   };
 
   saveText = (id) => {
-    const { items, currentText } = this.state;
+    const { currentText } = this.state;
+    const { items } = this.props;
 
     function isEqualId(array) {
       return array.id === id;
@@ -64,9 +60,12 @@ export default class List extends React.Component {
   };
 
   render() {
-    const {
-      items, isDataLoading, isModalOpen, currentText, currentId,
-    } = this.state;
+    const { items, isLoading } = this.props;
+    const { isModalOpen, currentText, currentId } = this.state;
+
+    if (isLoading) {
+      return <p>Загрузка...</p>;
+    }
 
     return (
       <React.Fragment>
@@ -77,7 +76,6 @@ export default class List extends React.Component {
             ))}
           </ListWrapper>
         )}
-        {isDataLoading && <p>Загрузка...</p>}
         {isModalOpen && (
           <Modal
             updateText={this.updateText}
@@ -91,3 +89,17 @@ export default class List extends React.Component {
     );
   }
 }
+
+const mapStateToProps = state => ({
+  items: state.items,
+  isLoading: state.itemsIsLoading,
+});
+
+const mapDispatchToProps = dispatch => ({
+  fetchData: url => dispatch(itemsFetchData(url)),
+});
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(List);
