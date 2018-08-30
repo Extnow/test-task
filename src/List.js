@@ -2,7 +2,6 @@ import React from 'react';
 import styled from 'styled-components';
 import Modal from './Modal';
 import Btn from './Btn';
-import itemsData from './itemsData.json';
 
 const ListWrapper = styled.div`
   width: 300px;
@@ -14,13 +13,18 @@ const ListWrapper = styled.div`
 
 export default class List extends React.Component {
   state = {
-    items: itemsData,
+    items: null,
     isModalOpen: false,
     currentText: null,
     currentId: null,
   };
 
   componentDidMount() {
+    fetch('http://localhost:3000/data/itemsData.json')
+      .then(response => response.json())
+      .then((data) => {
+        this.setState({ items: data });
+      });
     document.addEventListener('keydown', this.escFunctionEvent, false);
   }
 
@@ -60,12 +64,13 @@ export default class List extends React.Component {
 
     return (
       <React.Fragment>
-        <ListWrapper>
-          {items.map(item => (
-            <Btn key={item.id} text={item.text} toggleModal={() => this.toggleModal(item)} />
-          ))}
-        </ListWrapper>
-
+        {Array.isArray(items) && (
+          <ListWrapper>
+            {items.map(item => (
+              <Btn key={item.id} text={item.text} toggleModal={() => this.toggleModal(item)} />
+            ))}
+          </ListWrapper>
+        )}
         {isModalOpen && (
           <Modal
             updateText={this.updateText}
