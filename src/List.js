@@ -33,7 +33,9 @@ export default class List extends React.Component {
   };
 
   escFunctionEvent = (event) => {
-    if (event.keyCode === 27) {
+    const { isModalOpen } = this.state;
+
+    if (event.keyCode === 27 && isModalOpen === true) {
       this.setState(state => ({ isModalOpen: !state.isModalOpen }));
     }
   };
