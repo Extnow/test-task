@@ -64,7 +64,7 @@ export default class List extends React.Component {
       <React.Fragment>
         <ListWrapper>
           {items.map(item => (
-            <Btn key={item.id} text={item.text} toggleModal={() => this.toggleModal(item)} />
+            <Btn key={item.id} text={item.text} toggleModal={this.toggleModal} item={item} />
           ))}
         </ListWrapper>
 
@@ -72,7 +72,7 @@ export default class List extends React.Component {
           <Modal
             updateText={this.updateText}
             onClose={this.toggleModal}
-            onSave={this.saveText}
+            saveText={this.saveText}
             currentText={currentText}
             currentId={currentId}
           />
