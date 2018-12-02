@@ -41,7 +41,7 @@ export default class List extends React.Component {
   };
 
   updateText = (e) => {
-    this.setState({ currentText: e.target.value });
+    this.setState({ currentText: e.currentTarget.value });
   };
 
   saveText = (id) => {
