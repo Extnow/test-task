@@ -2,7 +2,6 @@ import React from 'react';
 import styled from 'styled-components';
 import Modal from './Modal';
 import Btn from './Btn';
-import itemsData from './itemsData.json';
 
 const ListWrapper = styled.div`
   width: 300px;
@@ -14,13 +13,19 @@ const ListWrapper = styled.div`
 
 export default class List extends React.Component {
   state = {
-    items: itemsData,
+    items: [],
     isModalOpen: false,
     currentText: null,
     currentId: null,
   };
 
   componentDidMount() {
+    fetch('http://localhost:3000/data/itemsData.json')
+      .then(response => response.json())
+      .then((data) => {
+        this.setState({ items: data });
+      });
+
     document.addEventListener('keydown', this.escFunctionEvent, false);
   }
 
