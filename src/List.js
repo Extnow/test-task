@@ -19,15 +19,33 @@ export default class List extends React.Component {
     currentId: null,
   };
 
-  componentDidMount() {
-    fetch('http://localhost:3000/data/itemsData.json')
-      .then(response => response.json())
-      .then((data) => {
-        this.setState({ items: data });
-      });
+  // componentDidMount() {
+  //   fetch('http://localhost:3000/data/itemsData.json')
+  //     .then(response => response.json())
+  //     .then(data => this.setState({ items: data }));
+
+  //   document.addEventListener('keydown', this.escFunctionEvent, false);
+  // }
+  // promise example
+
+  async componentDidMount() {
+    try {
+      const response = await fetch('http://localhost:3000/data/itemsData.json');
+
+      // проверка на 404 и 500 ошибки
+      if (!response.ok) {
+        throw Error(response.statusText);
+      }
+
+      const data = await response.json();
+      this.setState({ items: data });
+    } catch (error) {
+      console.log(error);
+    }
 
     document.addEventListener('keydown', this.escFunctionEvent, false);
   }
+  // async/await example
 
   toggleModal = (item) => {
     this.setState(state => ({
